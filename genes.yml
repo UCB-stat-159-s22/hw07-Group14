@@ -14,4 +14,4 @@ dependencies:
   - scikit-learn=1.0.2
   - seaborn=0.11.2
   - pip:
-    - tensorflow==2.4
+    - tensorflow==2.8.0
