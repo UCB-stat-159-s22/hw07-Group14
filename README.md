@@ -1,7 +1,7 @@
 ## reproducibility of Genes
 
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/UCB-stat-159-s22/hw07-Group14.git/HEAD?labpath=Single-cell-analysis.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/UCB-stat-159-s22/hw07-Group14.git/HEAD)
 
 
 
