@@ -2,9 +2,9 @@
 # Learn more at https://jupyterbook.org/customize/toc.html
 
 format: jb-book
-root: README
+root: README.md
 parts:
 - caption: Genes
   chapters:
-  - file: Single-cell-analysis
+  - file: Single-cell-analysis.ipynb
 
