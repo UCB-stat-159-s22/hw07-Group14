@@ -14,14 +14,14 @@ Jennefer, Claudea; Kim, Wendy; Tsai, Gordon; Villouta, Catalina
 
 
 ## Dependencies
-All dependencies are listed in `genes.yml`
+All dependencies are listed in `environment.yml` and `book-requirements.txt`
 
 ## Dataset
 .....
 
 ## Setup
-- Create Virtual Environment: using `genes.yml` in terminal
-	- `mamba env create -f genes.yml -p ~/envs/genes`
+- Create Virtual Environment: using `environment.yml` in terminal
+	- `mamba env create -f environment.yml -p ~/envs/genes`
 	- `python -m ipykernel install --user --name genes --display-name "IPython - genes"`
 	
 - Activate Virtual Environment:
