@@ -311,7 +311,7 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 <div class="section" id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
-<p>All dependencies are listed in <code class="docutils literal notranslate"><span class="pre">genes.yml</span></code></p>
+<p>All dependencies are listed in <code class="docutils literal notranslate"><span class="pre">environment.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">book-requirements.txt</span></code></p>
 </div>
 <div class="section" id="dataset">
 <h2>Dataset<a class="headerlink" href="#dataset" title="Permalink to this headline">¶</a></h2>
@@ -320,9 +320,9 @@ const thebe_selector_output = ".output, .cell_output"
 <div class="section" id="setup">
 <h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Create Virtual Environment: using <code class="docutils literal notranslate"><span class="pre">genes.yml</span></code> in terminal</p>
+<li><p>Create Virtual Environment: using <code class="docutils literal notranslate"><span class="pre">environment.yml</span></code> in terminal</p>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">mamba</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-f</span> <span class="pre">genes.yml</span> <span class="pre">-p</span> <span class="pre">~/envs/genes</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mamba</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-f</span> <span class="pre">environment.yml</span> <span class="pre">-p</span> <span class="pre">~/envs/genes</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ipykernel</span> <span class="pre">install</span> <span class="pre">--user</span> <span class="pre">--name</span> <span class="pre">genes</span> <span class="pre">--display-name</span> <span class="pre">&quot;IPython</span> <span class="pre">-</span> <span class="pre">genes&quot;</span></code></p></li>
 </ul>
 </li>
