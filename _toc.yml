@@ -1,6 +1,19 @@
+<<<<<<< HEAD
 format: jb-book
 root: README
 parts:
 - caption: Genes
   chapters:
   - file: Single-cell-analysis
+=======
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: README.md
+parts:
+- caption: Genes
+  chapters:
+  - file: Single-cell-analysis.ipynb
+
+>>>>>>> 5017340b2fea7e7fe457220a19251a6875500407
