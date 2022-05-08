@@ -17,18 +17,19 @@ Jennefer, Claudea; Kim, Wendy; Tsai, Gordon; Villouta, Catalina
 All dependencies are listed in `environment.yml` and `book-requirements.txt`
 
 ## Dataset
-.....
+The relevant datasets of this project span across cell information from the aorta, kidney, liver, and lung organs.
 
 ## Setup
 - Create Virtual Environment: using `environment.yml` in terminal
 	- `mamba env create -f environment.yml -p ~/envs/genes`
 	- `python -m ipykernel install --user --name genes --display-name "IPython - genes"`
+OR
+- Create Virtual Environment using Makefile in terminal: 'make env'
 	
 - Activate Virtual Environment:
 	conda activate genes
 	
-- Run analysis using Makefile in terminal:
-...
+- Run analysis using Makefile in terminal: 'make all' 
 
 
 ## Reference
