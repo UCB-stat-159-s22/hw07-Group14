@@ -10,7 +10,7 @@
 Jennefer, Claudea; Kim, Wendy; Tsai, Gordon; Villouta, Catalina
 
 ## Project Scope
-.....
+This project applies PCA and t-SNE to techniques to classify cells from the the aorta, kidney, liver, and lung organs. We can observe whether certain generic attributes of these cells make classification less or more accurate. 
 
 
 ## Dependencies
@@ -20,11 +20,11 @@ All dependencies are listed in `environment.yml` and `book-requirements.txt`
 The relevant datasets of this project span across cell information from the aorta, kidney, liver, and lung organs.
 
 ## Setup
-- Create Virtual Environment: using `environment.yml` in terminal
-	- `mamba env create -f environment.yml -p ~/envs/genes`
-	- `python -m ipykernel install --user --name genes --display-name "IPython - genes"`
-OR
-- Create Virtual Environment using Makefile in terminal: 'make env'
+- Create Virtual Environment
+	- using `environment.yml` in terminal
+		- `mamba env create -f environment.yml -p ~/envs/genes`
+		- `python -m ipykernel install --user --name genes --display-name "IPython - genes"`
+	- using Makefile in terminal: 'make env'
 	
 - Activate Virtual Environment:
 	conda activate genes
