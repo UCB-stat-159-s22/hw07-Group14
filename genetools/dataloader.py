@@ -7,6 +7,9 @@ import numpy as np
 
 
 class DataPreprocessing:
+	"""
+	Reads, preprocesses, and saves data needed for supervised learning task.
+	"""
 	
 	def __init__(self, **kwargs):
 		
@@ -26,6 +29,18 @@ class DataPreprocessing:
 	
 	
 	def run(self):
+		"""
+		The following steps are executed:
+		- Reads the data for specified organs.
+		- Filters features with zero variance if instructed.
+		- Keeps NUM_GENES features (gene counts) based on 
+		  mean difference between organs if instructed.
+		- Takes log if instructed.
+		- Saves the model if instructed.
+
+		Return dataframe.
+		"""	
+		
 		data = self.load_input_data()
 		if self.bool_filter_zero_variance:
 			data = self.filter_features_with_zero_variance(data)
@@ -65,8 +80,8 @@ class DataPreprocessing:
 	
 	def filter_features_mean_diff_score(self, data):
 		"""
-			Filter features based on difference of group means
-			divided total standard deviation
+		Filter features based on difference of group means
+		divided total standard deviation
 		"""
 
 		print("Filtering features based on difference of group means")
@@ -84,14 +99,25 @@ class DataPreprocessing:
 	
 	
 	def take_log(self, data):
+		"""
+		Compute logarithm of features (gene counts).
+		Return dataframe.
+		"""
 		data.iloc[:, :-1] = np.log(data.iloc[:, :-1] + 1)
 		return data
 	
 	
 	def save_data(self, data):
+		"""
+		Save the data in self.output_path.
+		"""
 		data.to_csv(self.output_path, index=True)
 	
 	
 	def load_processed_data(self):
+		"""
+		Load the data located in self.output_path.
+		Return dataframe.
+		"""
 		data = pd.read_csv(self.output_path, index_col=0)
 		return data

@@ -317,7 +317,7 @@ class Models:
 			display(res_cv)
 		
 		# Save
-		res_cv.to_csv(self.cv_path, index=False)
+		res_cv.to_csv(self.cv_path, index=True)
 		self.print_verbose(f"\nCross-validation results saved at {self.cv_path}")
 	
 	
@@ -461,7 +461,7 @@ class Models:
 			display(res)
 		
 		# Save
-		res.to_csv(self.test_performance_path, index=False)
+		res.to_csv(self.test_performance_path, index=True)
 	
 	
 	def plot_confusion_matrices(self):
