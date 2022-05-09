@@ -1,0 +1,15 @@
+
+import pytest
+import pandas as pd
+import conftest as cf
+
+
+def test_data(data):
+	
+	assert isinstance(data, pd.DataFrame)
+	assert data.shape[0] > 0
+	assert data.shape[1] == cf.NUM_GENES + 1
+	assert data.iloc[:, -1].nunique() == 2
+
+
+
