@@ -1,4 +1,4 @@
-## reproducibility of Genes
+## Reproducibility of Genes
 
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/UCB-stat-159-s22/hw07-Group14.git/HEAD)
@@ -33,4 +33,11 @@ The relevant datasets of this project span across cell information from the aort
 
 
 ## Reference
-....
+- https://doi.org/10.6084/m9.figshare.5829687.v8
+	- FACS.zip
+- https://doi.org/10.6084/m9.figshare.5821263.v3
+- https://doi.org/10.6084/m9.figshare.5829687.v8
+- https://doi.org/10.6084/m9.figshare.5968960.v3
+- https://doi.org/10.6084/m9.figshare.5975392.v1
+- https://doi.org/10.6084/m9.figshare.5725891.v1
+- https://doi.org/10.6084/m9.figshare.5715025.v1https://doi.org/10.6084/m9.figshare.5715040.v1 
