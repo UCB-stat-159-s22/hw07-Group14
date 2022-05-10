@@ -1,7 +1,7 @@
 JPG_FILES = $(wildcard figures/*.jpg)
 CSV_FILES = $(wildcard tables/*.csv)
 
-#Build Jupyter Book
+#To Build and deploy Jupyter Book locally
 .PHONY : html
 html: 
 	jupyter-book build .
