@@ -213,6 +213,11 @@ const thebe_selector_output = ".output, .cell_output"
             <nav id="bd-toc-nav" aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#introduction">
+   Introduction
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#data-preprocessing">
    Data Preprocessing
   </a>
@@ -253,6 +258,11 @@ const thebe_selector_output = ".output, .cell_output"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#introduction">
+   Introduction
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#data-preprocessing">
    Data Preprocessing
   </a>
@@ -283,6 +293,18 @@ const thebe_selector_output = ".output, .cell_output"
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="final-project-stat-259-single-cell-sequencing-analysis">
 <h1>Final Project STAT 259: Single Cell Sequencing Analysis<a class="headerlink" href="#final-project-stat-259-single-cell-sequencing-analysis" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>In this project we build a deep learning model capable of classifying mouse cells to the appropriate organ they came from.</p>
+<p>The technical term for the kind of data used here is single cell transcriptome data, which basically provides the counts of RNA sequences of a very large universe of genes found in the cell. Cells coming from different organs usually have different functions, thus the number of RNA sequences transcribed will tend to be different for different organs.</p>
+<p>Practically speaking, the data used consists of one cell per row, and a large number of features representing the counts mentioned, with each column identified by the related gene. For this small project only two organs (labels) are considerd: kidney and liver. Except for the data processing part, the work done, and the devised model are generalizable to as many labels as needed with enough computational resources. The original data has 23k+ features per cell, and the total number of cells (rows) for the chosen organs is less than 2k, 1846 to be exact. To limit the number of features, two filters were implemented. The first is to filter the rows with zero variance. The second is to keep the rows with the highest score, defined as the difference between the means of each organ divided by the total standard deviation, which is inspired by classical stats. 1000 features were kept based on this score.</p>
+<p>A dataset with 1.8k rows and 1k columns could in many cases be thought as an incorrectly posed problem for traditional statistic, or even classical ML models. Many would think a high performance would not be possible, much less with a highly sophisticated model. However, this task is not only approachable by deep learning techniques when applied correctly; the accuracy obtained is above 94% out-of-sample. ROC AUC is 99%.</p>
+<p>The model has two distinct parts that then are seamlessly put together to work as one deep learning neural network. There are a number of best practices to avoid overfitting. Arguably the most important one here was that an autoencoder was first fitted using features only, which greatly reduces the risk of data leakage and overfitting. The autoencoder consists of an encoder and a decoder. The encoder outputs a low dimensional representation of each data point (32 dimensions in this project). The decoder then takes this embedding and tries to recover the original features. Thus the autoencoder is trained using the features as input and the same features as the target. The autoencoder archictecture considers dropout layers in between the fully connected layers in order to avoid memorization of the training data. Fully connected layers also use L1 regularization, which helps with overfitting as well. The encoder has 132k+ parameters, thus given our small sample the trained values will be fixed for the classifier down the line.</p>
+<p>After training the autoencoder, only the encoder part is recovered with trained parameters. The organ classifier is built on top of the encoder, both using Tensorflow. Two classifier architectures were tried, one called small that consists of the encoder + dropout + fully connected layer (output), and another called larger that has one additional hidden layer (with dropout) in between the encoder and the output layer. Both models do exceptionally well, with the small model usually doing better, but depending on the partition of data.</p>
+<p>Hopefully this work shows that sophisticated models like the one presented here, which leverage autoencoders and deep neural networks, can showcase the potential of machine learning in real world applications. The techniques and concepts can be perfectly applied in the field of biology, where the access to gene related data is abundant.</p>
+</div>
+<div class="section" id="data-preprocessing">
+<h2>Data Preprocessing<a class="headerlink" href="#data-preprocessing" title="Permalink to this headline">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">genetools</span> <span class="kn">import</span> <span class="n">dataloader</span>
@@ -291,8 +313,6 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div>
 </div>
-<div class="section" id="data-preprocessing">
-<h2>Data Preprocessing<a class="headerlink" href="#data-preprocessing" title="Permalink to this headline">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dp</span> <span class="o">=</span> <span class="n">dataloader</span><span class="o">.</span><span class="n">DataPreprocessing</span><span class="p">(</span>
@@ -328,6 +348,13 @@ Filtering features based on difference of group means
 </div>
 </div>
 </div>
+<p>The details of the pre-processing are in the python scripts. At a high level the steps followed are:</p>
+<ul class="simple">
+<li><p>Filter features with zero variance.</p></li>
+<li><p>Filter features based on score defined as difference between mean (grouped by organ) divided by total standard deviation. The highest 1000 values are chosen.</p></li>
+<li><p>Take logarithm. This helps keep the range of feature values similar.</p></li>
+</ul>
+<p>The number of columns of data is 1001, 1000 features and 1 label column.</p>
 </div>
 <div class="section" id="data-split">
 <h2>Data split<a class="headerlink" href="#data-split" title="Permalink to this headline">¶</a></h2>
@@ -376,6 +403,7 @@ Filtering features based on difference of group means
 </div>
 </div>
 </div>
+<p>The object m, is an instance of the class Models, which keeps as attribute the data and various path in order to easily save and retrieve the models and results. It has all the functionality for training and assessing the models.</p>
 </div>
 <div class="section" id="autoencoder">
 <h2>Autoencoder<a class="headerlink" href="#autoencoder" title="Permalink to this headline">¶</a></h2>
@@ -443,6 +471,7 @@ Encoder saved at models/encoder_best.hdf5
 </div>
 </div>
 </div>
+<p>The autoencoder is a rather large model. Notice the symmetry between the encoder (first 5 layers if the input is counted) and the decoder (last 4 layers). The final output here is the encoder extracted from the trained autoencoder.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">m</span><span class="o">.</span><span class="n">plot_encoder_2d_and_compare</span><span class="p">()</span>
@@ -450,9 +479,10 @@ Encoder saved at models/encoder_best.hdf5
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/main_11_0.png" src="_images/main_11_0.png" />
+<img alt="_images/main_14_0.png" src="_images/main_14_0.png" />
 </div>
 </div>
+<p>The encoder is conceptually doing a similar task as the one PCA would perform. It reduces the dimensions of the data. However, we notice the encoder (together with t-SNE for the last projection into 2D) does a much better job at finding meaningful latent variables than PCA, as clearly shown in the figure above. The task of predicting the organ seems relatively easy for a classifier that uses a useful projection. The information used should be in fact richer than what we can visualize, since the embedding has 32 dimensions, and thus some information almost surely was lost when projecting to 2 dimensions.</p>
 </div>
 <div class="section" id="classifier">
 <h2>Classifier<a class="headerlink" href="#classifier" title="Permalink to this headline">¶</a></h2>
@@ -575,6 +605,8 @@ Cross-validation results:
 </div>
 </div>
 </div>
+<p>As mentioned in the introduction, both the small and larger models are built on top of the encoder. The small model has an output layer right away and the larger model has a hidden layer in between the encoder and the output layer. Both use dropout right before added layers.</p>
+<p>Note that the cross-validated accuracy of both model is very high, with ~93% for the small model and ~95% for the larger. Precision, recall, and F1 score are all high and similar. ROC AUC is extremely high and close to 99% for both.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">m</span><span class="o">.</span><span class="n">run_assessment</span><span class="p">()</span>
@@ -632,21 +664,22 @@ Cross-validation results:
 </div></div><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Confusion Matrix Small
 </pre></div>
 </div>
-<img alt="_images/main_14_3.png" src="_images/main_14_3.png" />
+<img alt="_images/main_19_3.png" src="_images/main_19_3.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Confusion Matrix Larger
 </pre></div>
 </div>
-<img alt="_images/main_14_5.png" src="_images/main_14_5.png" />
+<img alt="_images/main_19_5.png" src="_images/main_19_5.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ROC curve Small
 </pre></div>
 </div>
-<img alt="_images/main_14_7.png" src="_images/main_14_7.png" />
+<img alt="_images/main_19_7.png" src="_images/main_19_7.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ROC curve Larger
 </pre></div>
 </div>
-<img alt="_images/main_14_9.png" src="_images/main_14_9.png" />
+<img alt="_images/main_19_9.png" src="_images/main_19_9.png" />
 </div>
 </div>
+<p>This last cell shows test set results. The confusion matrix shows the predictions are well balanced. Of 370 cells in the test set, only 21 were incorrectly classified for the small model (8 incorrectly classified as liver, and 13 incorrectly classified as kidney). Out-of-sample performance metrics for the small model are comparable to those obtained by cross-validation. ROC curves for the small model look like a data scientist dream ;)</p>
 </div>
 </div>
 
