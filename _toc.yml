@@ -4,8 +4,6 @@
 format: jb-book
 root: README.md
 parts:
-- caption: Genes
+- caption: Single cell sequencing analysis
   chapters:
-  - file: Single-cell-analysis.ipynb
-
-
+  - file: main.ipynb
