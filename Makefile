@@ -1,4 +1,4 @@
-PNG_FILES = $(wildcard figures/*.png)
+JPG_FILES = $(wildcard figures/*.jpg)
 CSV_FILES = $(wildcard tables/*.csv)
 
 #Build Jupyter Book
@@ -21,7 +21,7 @@ all :
 # Clean figures, tables, and build book
 .PHONY : clean
 clean :
-	rm -f $(PNG_FILES)
+	rm -f $(JPG_FILES)
 	rm -f $(CSV_FILES)
 	rm -rf _build/html/
 
@@ -34,5 +34,5 @@ env:
 
 .PHONY : variables
 variables :
-	@echo PNG_FILES: $(PNG_FILES)
+	@echo PNG_FILES: $(JPG_FILES)
 	@echo CSV_FILES: $(CSV_FILES)
