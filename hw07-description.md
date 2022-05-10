@@ -1,7 +1,7 @@
 # Homework No 7 - Final Project: original data analysis
 
 * **Statistics 159/259, Spring 2022**
-* **Due Friday 05/11/2022, 2:00PM PT**
+* **Due Wednesday 05/11/2022, 2:00PM PT**
 * Prof. F. Pérez and GSI F. Sapienza, Department of Statistics, UC Berkeley.
 * This assignment is worth a maximum of **100 points**.
 * Assignment type: **group**.
