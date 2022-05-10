@@ -1,0 +1,6 @@
+
+# Ignore _build folder:
+_build/
+
+# Ignore genetools.egg-info folder:
+genetools.egg-info/
