@@ -321,16 +321,15 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 <div class="section" id="project-scope">
 <h1>Project Scope<a class="headerlink" href="#project-scope" title="Permalink to this headline">¶</a></h1>
-<p>In this project we work directly with public available single cell RNA-seq data with the aim of classifying Mus musculus (a mouse) cells to the appropiate organ they came from. Due to computational resources we only worked with cells from kidney and liver, however the work presented here is generalizable to as many organs as needed.</p>
+<p>In this project we work directly with public available single cell RNA-seq data with the aim of classifying Mus musculus (house mouse) cells to the appropiate organ they came from. Given limited computational resources we decided to work with cells from kidney and liver only, however the work presented here is generalizable to as many organs as needed.</p>
 </div>
 <div class="section" id="project-goals">
 <h1>Project Goals<a class="headerlink" href="#project-goals" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><p>Represent the cells in a lower-dimensional space.</p></li>
-<li><p>Implement an autoencoder to find a latent representation of the data.</p></li>
-<li><p>Compare two-dimensional representations of our data using PCA and the latent space defined by the autoencoder + t-SNE.</p></li>
-<li><p>Use the trained encoder to classify unlabeled cells as one of the cell types labeled in the original data (kidney or liver cells).</p></li>
-<li><p>Show the performance of the classifier.</p></li>
+<li><p>Implement an autoencoder to find a low-dimensional latent representation of the cells.</p></li>
+<li><p>Show that the latent representation is more useful than PCA.</p></li>
+<li><p>Implement a model built on top of the encoder for classifying cells into kidney or liver.</p></li>
+<li><p>Obtain a high performance for the classifier out-of-sample.</p></li>
 </ul>
 </div>
 <div class="section" id="dependencies">
