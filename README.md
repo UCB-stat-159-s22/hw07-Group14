@@ -44,6 +44,9 @@ This project's relevant datasets span cell information from kidney and liver org
 ## Run tests
 - Use the command `pytest genetools` on the terminal to run all the tests.
 
+## License
+This project is released under the terms of the BSD 3-clause License.
+
 ## Reference
 We obtained the data from the Tabula Muris project released in 2017 by The Chan Zuckerberg Biohub. All matrices of gene-cell counts and metadata are available as CSVs on [Figshare](https://figshare.com/articles/dataset/Single-cell_RNA-seq_data_from_Smart-seq2_sequencing_of_FACS_sorted_cells_v2_/5829687?file=10700143). We specifically used the data for kidney and liver cells from the FACS-based full-length transcript analysis released in 2018. 
 
