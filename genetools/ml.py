@@ -34,7 +34,40 @@ class Models:
 	
 	
 	def data_split(self, data, test_size=0.2):
-
+		"""
+		Splits data into x with features and y with labels, and then again into 
+		train and test. test_size controls the split proportions.
+		
+		Parameters
+		-------
+		data: pandas dataframe
+			Columns representing gene (log) counts and rows representing cells.
+			Last column contains the label, i.e. the organ the cell belongs to.
+		
+		Returns
+		-------
+		Nothing. Several objects are saved as arguments of the class instance.
+		self.x: pandas dataframe
+			Contains only features and all rows of data.
+		self.x_train: pandas dataframe
+			Contains only features and selection of rows inteded for training.
+		self.x_test: pandas dataframe
+			Contains only features and selection of rows inteded for testing.
+		self.y: pandas dataframe
+			Contains one hot encoded representation of labels for all rows.
+		self.y_train: pandas dataframe
+			Contains one hot encoded representation of labels, subset of rows
+			intended for training.
+		self.y_test: pandas dataframe
+			Contains one hot encoded representation of labels, subset of rows
+			intended for testing.
+		self.y_raw: pandas dataframe
+			Contains original label of data (not one hot encoded, i.e. only one
+			column)
+		self.organs: array-like
+			Organs presented in the same order as in one hot encoded target dataframes
+			(i.e. y, y_train, y_test).
+		"""
 		# Separate features from label
 		x = data.iloc[:, :-1]
 		y = data.iloc[:, -1]
@@ -66,6 +99,10 @@ class Models:
 	
 	
 	def run_encoder(self):
+		"""
+		Initializes and trains autoencoder. It then extracts trained encoder
+		from trained autoencoder and saves it.
+		"""
 		self.initialize_autoencoder()
 		self.fit_autoencoder()
 		self.autoencoder_performance()
@@ -75,11 +112,29 @@ class Models:
 	
 	def initialize_autoencoder(self, encoding_dim=32, dropout_value=0.2):
 		"""
-			Latent space of 32 dimensions
-			1 hidden layer for encoder and one for decoder
-			L1 regularization used in fully connected layers
-			Encoder will be defined later after training 
-			based on the first layers of the autoencoder
+		Initializes autoencoder with the following characteristics:
+		-Latent space of encoding_dim dimensions (default is 32).
+		-1 hidden layer for encoder and one for decoder.
+		-dropout before each fully connected layer.
+		-L1 regularization used in fully connected layers.
+		
+		Encoder is defined later after training based on the first layers of the 
+		autoencoder
+		
+		Parameters
+		----------
+		encoding_dim: int
+			Number of dimensions in latent space (embedding).
+		dropout_value: float
+			Percentage of nodes output to be multiplied by zero in dropout layer.
+			Nodes are chosen at random at each gradient step.
+			
+		Returns
+		-------
+		Nothing. It saves the following class instance argument:
+		self.autoencoder: keras Model
+			Untrained autoencoder
+		It prints autoencoder architecture if class verbose argument is not 0.
 		"""
 		
 		input_dim = self.x.shape[1]
@@ -103,10 +158,22 @@ class Models:
 	
 	
 	def fit_autoencoder(self):
-
-		# Configurations for improving training with the aim to reduce over-fitting 
-		# and also allow to seek for a lower bias model.
-		# Reference: https://stackoverflow.com/questions/48285129/saving-best-model-in-keras
+		"""
+		Compiles and trains autoencoder using self.x_train for gradient step
+		and self.x_test for validation.
+		Several callbacks are used. End result is that best model in validation
+		set is saved.
+		
+		Returns
+		-------
+		Nothing.
+		self.autoencoder will be loaded with best model in validation set.
+		Best autoencoder is also saved at self.autoencoder_path.
+		"""
+		
+		# Configurations for improving training with the aim to reduce 
+		# over-fitting and also allow to seek for a lower bias model.
+		# Reference: https://stackoverflow.com/questions/48285129/saving-best-model-in-keras		
 		early_stopping = keras.callbacks.EarlyStopping(
 			monitor='val_loss', 
 			patience=20, verbose=0,
@@ -152,7 +219,7 @@ class Models:
 	
 	def autoencoder_performance(self):
 		"""
-			Evaluate autoencoder performance using loss function on test set
+			Evaluate autoencoder performance using loss function on test set.
 		"""
 		self.print_verbose("\nAutoencoder loss on test set")
 		self.autoencoder.evaluate(
@@ -163,6 +230,9 @@ class Models:
 	
 	
 	def initialize_trained_encoder(self):
+		"""
+		Initializes encoder based on trained autoencoder.
+		"""
 		# Encoder
 		encoder_output = self.autoencoder.layers[4].output
 		encoder_input = self.autoencoder.input
@@ -173,6 +243,9 @@ class Models:
 	
 	
 	def save_encoder(self):
+		"""
+		Saves encoder at self.encoder_path.
+		"""
 		# Save model
 		self.encoder.compile(optimizer='adam', loss='mean_squared_error')
 		keras.models.save_model(self.encoder, self.encoder_path, save_format='hdf5')
@@ -180,11 +253,23 @@ class Models:
 	
 	
 	def load_encoder(self):
+		"""
+		Loads and compiles encoder from self.encoder_path.
+		"""
 		self.encoder = keras.models.load_model(self.encoder_path, compile=False)
 		self.encoder.compile(optimizer='adam', loss='mean_squared_error')
 	
 	
 	def plot_encoder_2d_and_compare(self):
+		"""
+		Plots two competing 2D representations of cells features.
+		One is PCA (first two principal components).
+		Second is t-SNE applied to encoder representation of data.
+		
+		Returns
+		-------
+		Nothing. Figure is saved at self.projection_plot_path.
+		"""	
 		
 		# PCA
 		pca32 = PCA(n_components=32)
@@ -237,11 +322,25 @@ class Models:
 	
 	
 	def run_classifier(self):
+		"""
+		Initializes and trains classifier based on trained encoder for each 
+		cross-validation fold.  Models and metrics are saved.
+		"""
 		self.initilize_classifiers()
 		self.compute_and_save_cross_validation()
 	
 	
 	def initilize_classifiers(self):
+		"""
+		Initializes small and larger classifiers.
+
+		Returns
+		-------
+		Nothing. Models are saved in class instance arguments:
+		self.nn_small: keras Model
+		self.nn_larger: keras Model
+		Architecture of both is optionally printed based on self.verbose
+		"""
 		# Small model quick validation
 		self.nn_small = self.initilize_supervised_model('small')
 		self.print_verbose("\nSmall classifier architecture:")
@@ -257,11 +356,18 @@ class Models:
 	
 	def initilize_supervised_model(self, size):
 		"""
-			- Loads trained encoder (encoder must have been saved before)
-			- Adds layers according to size given (size in ['small', 'larger'])
-			  for supervized learning set up (label prediction)
-			- Returns supervised model with untrained added layers
-			  but first layers, coming from encoder, are trained already
+		Initializes supervised model given by size. Only encoder part is trained.
+		The architecture is controlled by the size parameter.
+		
+		Parameters
+		----------
+		size: string
+			Either 'small' or 'larger'
+		
+		Returns
+		-------
+		nn_model: keras Model
+			Supervised model built on top of encoder. Added layers are untrained.
 		"""
 		
 		assert size in ['small', 'larger']
@@ -296,6 +402,9 @@ class Models:
 	
 
 	def compute_and_save_cross_validation(self):
+		"""
+		Computes and saves cross-valition results at self.cv_path.
+		"""
 		
 		# Cross-validation results for small model: folds details
 		res_cv_small = self.nn_cross_validation("small")
@@ -322,6 +431,30 @@ class Models:
 	
 	
 	def nn_cross_validation(self, size, n_split=4):
+		"""
+		Performs cross-validation on the classifier with architecture dictated by size.
+		For each fold:
+		- The classifier is initialized. Trained encoder parameters are not further trained.
+		- The classifier last layers are trained using target data. Test set is not touched here.
+		- Performance is measured and collected in a dataframe.
+		
+		Parameters
+		----------
+		size: string
+			Either 'small' or 'larger'
+		n_split: int
+			Number of folds.
+		
+		Returns
+		-------
+		results: pandas dataframe
+			One row per fold and one column per metric.
+		
+		Best fold models are constantly overwritten at self.classifier_path_format 
+		(replacing appropriate size in string). At the end of the execution the 
+		mentioned path will have the best model of the last fold.
+
+		"""
 
 		self.print_verbose(f"\nCross-validation for size = {size}")
 
@@ -399,6 +532,13 @@ class Models:
 	
 	
 	def compute_metrics(self, y_true, y_score, average='macro'):
+		"""
+		Compute metrics.
+		
+		Returns
+		-------
+		Dictionary with metrics.
+		"""
 		assert y_true.shape == y_score.shape
 		y_ind_pred = np.argmax(y_score, axis=1)
 		y_ind_true = np.argmax(y_true, axis=1)
@@ -417,6 +557,10 @@ class Models:
 	
 	
 	def run_assessment(self):
+		"""
+		Measure performance of classifiers (both small and larger).
+		Saves test set performance, confusion matrices heatmap and roc curves plot.
+		"""
 		self.load_classifiers()
 		self.test_performance()
 		self.plot_confusion_matrices()
@@ -424,6 +568,9 @@ class Models:
 	
 	
 	def load_classifiers(self):
+		"""
+		Loads and compiles small and larger model to self.nn_small and self.nn_larger.
+		"""
 		# Load last model trained in cross-validation
 		# Training needs a validation set so any fold model is OK
 		self.nn_small = keras.models.load_model(self.classifier_path_format.format(size='small'), 
@@ -435,6 +582,20 @@ class Models:
 	
 	
 	def get_truth_and_score(self):
+		"""
+		Computes inputs needed for several performance tables and plots.
+		
+		Returns
+		-------
+		y_true: numpy array
+			y_test values (one hot encoded, i.e. two columns)
+		y_true_indices: numpy array
+			one column version of y_true containing indices instead
+		y_score_small: numpy array
+			small model prediction of self.x_test
+		y_score_larger: numpy array
+			larger model prediction of self.x_test
+		"""
 		# Truth and predictions
 		y_true = self.y_test.values
 		y_true_indices = np.argmax(y_true, axis=1)
@@ -444,6 +605,10 @@ class Models:
 	
 	
 	def test_performance(self):
+		"""
+		Computs performance in test set for both models.
+		Saves results at self.test_performance_path
+		"""
 
 		# Get inputs
 		y_true, y_true_indices, y_score_small, y_score_larger = self.get_truth_and_score()
@@ -465,6 +630,11 @@ class Models:
 	
 	
 	def plot_confusion_matrices(self):
+		"""
+		Computes confusion matrices for both models.
+		Plots a heatmap of each matrix and saves it at self.confusion_matrix_path_format
+		(replacing size appropriately).
+		"""
 		
 		# Get inputs
 		y_true, y_true_indices, y_score_small, y_score_larger = self.get_truth_and_score()
@@ -481,6 +651,23 @@ class Models:
 	
 	
 	def plot_confusion_matrix_model(self, size, conf_matrix, title=True):
+		"""
+		Generates and saves heatmap of confusion matrix for specified model.
+		
+		Parameters
+		----------
+		size: string
+			Either 'small' or 'larger'
+		conf_matrix: numpy array
+			Confusion matrix. Prediction at columns and truth at rows.
+		tittle: boolean
+			True for including a title to the figure.
+			
+		Returns
+		-------
+		Nothing. Saves the heatmap at self.confusion_matrix_path_format according
+		to size.
+		"""
 		
 		self.print_verbose(f"\nConfusion Matrix {size.title()}")
 		
@@ -504,6 +691,9 @@ class Models:
 	
 	
 	def plot_roc_curves(self):
+		"""
+		Plots and saves roc curves for both models.
+		"""
 		
 		# Get inputs
 		y_true, y_true_indices, y_score_small, y_score_larger = self.get_truth_and_score()
@@ -514,6 +704,22 @@ class Models:
 	
 	
 	def plot_roc_curve_model(self, size, y_true_indices, y_score, title=True):
+		"""
+		Plots and saves roc curve for model specified by size.
+		
+		Parameters
+		----------
+		size: string
+			Either 'small' or 'larger'
+		y_true_indices: numpy array
+			One column version of y_true containing indices instead
+		y_score: numpy array
+			Model prediction
+			
+		Returns
+		-------
+		Nothing. Saves the plot at self.roc_path_format
+		"""
 
 		self.print_verbose(f"\nROC curve {size.title()}")
 				
@@ -540,5 +746,17 @@ class Models:
 		plt.show()
 
 	def print_verbose(self, s):
+		"""
+		Print string s if self.verbose is not 0 or False.
+		
+		Parameters
+		----------
+		s: string
+			Any string to possibly print.
+		
+		Returns
+		-------
+		Nothing. Might print according to self.verbose.
+		"""
 		if self.verbose:
 			print(s)

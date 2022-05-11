@@ -30,15 +30,21 @@ class DataPreprocessing:
 	
 	def run(self):
 		"""
-		The following steps are executed:
+		The following steps can be executed:
 		- Reads the data for specified organs.
-		- Filters features with zero variance if instructed.
+		- Filters features with zero variance.
 		- Keeps NUM_GENES features (gene counts) based on 
-		  mean difference between organs if instructed.
-		- Takes log if instructed.
-		- Saves the model if instructed.
+		  mean difference between organs.
+		- Takes log.
+		- Saves the model.
+		The arguments of the class can be used to control which steps are ran
+		and which are not.
 
-		Return dataframe.
+		Returns
+		-------
+		data: pandas dataframe
+			Columns representing gene counts and rows representing cells.
+			Last column contains the label, i.e. the organ the cell belongs to.
 		"""	
 		
 		data = self.load_input_data()
@@ -54,6 +60,16 @@ class DataPreprocessing:
 	
 	
 	def load_input_data(self):
+		"""
+		Reads and appends all dataframes located at self.input_path_format
+		after replacing in the path each organ present in self.organs
+		
+		Returns
+		-------
+		data: pandas dataframe
+			Columns representing gene counts and rows representing cells.
+			Last column contains the label, i.e. the organ the cell belongs to.
+		"""
 		print("Loading data")
 		data = pd.DataFrame()
 		for organ in self.organs:
@@ -62,6 +78,21 @@ class DataPreprocessing:
 	
 	
 	def load_data_organ(self, organ):
+		"""
+		Reads csv file at the path obtained by replacing the organ given
+		in self.input_path_format.
+		
+		Parameters
+		---------
+		organ: string 
+			Example: 'liver' or 'kidney'
+		
+		Returns
+		-------
+		data: pandas dataframe
+			Columns representing gene counts and rows representing cells.
+			Last column contains the label, i.e. the organ the cell belongs to.
+		"""
 		data = pd.read_csv(self.input_path_format.format(organ=organ))
 		data.rename(columns={'Unnamed: 0': 'index'}, inplace=True)
 		data.set_index("index", inplace=True)
@@ -71,6 +102,17 @@ class DataPreprocessing:
 	
 	
 	def filter_features_with_zero_variance(self, data):
+		"""
+		Filters feature columns with zero variance.
+		
+		Parameters
+		----------
+		data: pandas dataframe
+		
+		Returns
+		-------
+		data: pandas dataframe
+		"""
 		print("Filtering features with zero variance")
 		std = data.std(axis=0, numeric_only=True)
 		final_features = list(std[std != 0].index)
@@ -81,9 +123,17 @@ class DataPreprocessing:
 	def filter_features_mean_diff_score(self, data):
 		"""
 		Filter features based on difference of group means
-		divided total standard deviation
+		divided total standard deviation. 
+		Keeps the top self.num_genes features with the highest score.
+		
+		Parameters
+		----------
+		data: pandas dataframe
+		
+		Returns
+		-------
+		data: pandas dataframe
 		"""
-
 		print("Filtering features based on difference of group means")
 		
 		# Compute mean difference score
@@ -101,7 +151,14 @@ class DataPreprocessing:
 	def take_log(self, data):
 		"""
 		Compute logarithm of features (gene counts).
-		Return dataframe.
+
+		Parameters
+		----------
+		data: pandas dataframe
+		
+		Returns
+		-------
+		data: pandas dataframe
 		"""
 		data.iloc[:, :-1] = np.log(data.iloc[:, :-1] + 1)
 		return data
@@ -110,6 +167,14 @@ class DataPreprocessing:
 	def save_data(self, data):
 		"""
 		Save the data in self.output_path.
+		
+		Parameters
+		----------
+		data: pandas dataframe
+		
+		Returns
+		-------
+		Nothing. The dataframe is saved.
 		"""
 		data.to_csv(self.output_path, index=True)
 	
@@ -117,7 +182,10 @@ class DataPreprocessing:
 	def load_processed_data(self):
 		"""
 		Load the data located in self.output_path.
-		Return dataframe.
+		
+		Returns
+		-------
+		data: pandas dataframe
 		"""
 		data = pd.read_csv(self.output_path, index_col=0)
 		return data
