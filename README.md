@@ -7,15 +7,14 @@ Jennefer, Claudea; Kim, Wendy; Tsai, Gordon; Villouta, Catalina
 
 ## Project Scope
 
-In this project we work directly with public available single cell RNA-seq data with the aim of classifying Mus musculus (a mouse) cells to the appropiate organ they came from. Due to computational resources we only worked with cells from kidney and liver, however the work presented here is generalizable to as many organs as needed.
+In this project we work directly with public available single cell RNA-seq data with the aim of classifying Mus musculus (house mouse) cells to the appropiate organ they came from. Given limited computational resources we decided to work with cells from kidney and liver only, however the work presented here is generalizable to as many organs as needed.
 
 ## Project Goals
 
-- Represent the cells in a lower-dimensional space.
-- Implement an autoencoder to find a latent representation of the data.
-- Compare two-dimensional representations of our data using PCA and the latent space defined by the autoencoder + t-SNE.
-- Use the trained encoder to classify unlabeled cells as one of the cell types labeled in the original data (kidney or liver cells).
-- Show the performance of the classifier.
+- Implement an autoencoder to find a low-dimensional latent representation of the cells.
+- Show that the latent representation is more useful than PCA.
+- Implement a model built on top of the encoder for classifying cells into kidney or liver.
+- Obtain a high performance for the classifier out-of-sample.
 
 ## Dependencies
 All dependencies are listed in `environment.yml` and `book-requirements.txt`
